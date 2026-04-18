@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Sector, Tooltip } from "recharts";
 import { useLicenses, useLicenseTypes, useSuppliers } from "@/hooks/use-store";
 import { statusFor, statusLabel } from "@/lib/storage";
 import { Card } from "@/components/ui/card";
@@ -15,6 +16,14 @@ import { ArrowRight, AlertTriangle, ShieldCheck, XCircle, CircleDashed } from "l
 import { shortDate, daysUntil } from "@/lib/format";
 import type { LicenseStatus } from "@/lib/types";
 
+const STATUS_ORDER: LicenseStatus[] = ["valid", "renewing", "expired", "missing"];
+const STATUS_COLORS: Record<LicenseStatus, string> = {
+  valid: "var(--success)",
+  renewing: "var(--warning)",
+  expired: "var(--danger)",
+  missing: "var(--muted-foreground)",
+};
+
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
 });
@@ -24,6 +33,7 @@ function AdminDashboard() {
   const types = useLicenseTypes();
   const licenses = useLicenses();
   const [filter, setFilter] = useState<string>("all");
+  const [activeStatus, setActiveStatus] = useState<LicenseStatus | null>(null);
 
   const filteredSuppliers = filter === "all" ? suppliers : suppliers.filter((s) => s.id === filter);
 
@@ -44,14 +54,26 @@ function AdminDashboard() {
   }, [allRequirements]);
 
   const total = allRequirements.length;
-  const irregular = counts.expired + counts.missing;
-  const riskPct = total === 0 ? 0 : Math.round((irregular / total) * 100);
 
-  const upcoming = allRequirements
-    .filter((r) => r.status === "renewing" || r.status === "expired")
+  const pieData = useMemo(
+    () =>
+      STATUS_ORDER.map((status) => ({
+        status,
+        name: statusLabel(status),
+        value: counts[status],
+        color: STATUS_COLORS[status],
+      })).filter((d) => d.value > 0),
+    [counts],
+  );
+
+  const upcomingSource = activeStatus
+    ? allRequirements.filter((r) => r.status === activeStatus)
+    : allRequirements.filter((r) => r.status === "renewing" || r.status === "expired");
+
+  const upcoming = upcomingSource
     .sort((a, b) => {
-      // expired first, then renewing soonest
-      const order = (s: LicenseStatus) => (s === "expired" ? 0 : 1);
+      const order = (s: LicenseStatus) =>
+        s === "expired" ? 0 : s === "renewing" ? 1 : s === "missing" ? 2 : 3;
       const oa = order(a.status);
       const ob = order(b.status);
       if (oa !== ob) return oa - ob;
@@ -116,31 +138,138 @@ function AdminDashboard() {
       {/* Risk & list */}
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-1">
-          <p className="text-sm font-medium text-muted-foreground">Indicador de risco</p>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-display text-5xl tracking-tight">{riskPct}%</span>
-            <span className="text-sm text-muted-foreground">irregular</span>
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Visão geral</p>
+              <h2 className="font-display text-xl">Distribuição de licenças</h2>
+            </div>
+            {activeStatus && (
+              <button
+                type="button"
+                onClick={() => setActiveStatus(null)}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                Limpar
+              </button>
+            )}
           </div>
-          <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-secondary">
-            <div
-              className="h-full rounded-full bg-danger transition-all"
-              style={{ width: `${riskPct}%` }}
-            />
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            {irregular} de {total} licenças exigidas estão expiradas ou pendentes de envio.
-          </p>
 
-          <div className="mt-6 space-y-2 border-t border-border pt-4">
-            <Row label="Total de licenças exigidas" value={total} />
-            <Row label="Em renovação (≤120 dias)" value={counts.renewing} />
-            <Row label="Fornecedores monitorados" value={filteredSuppliers.length} />
+          <div className="mt-2 h-56 w-full">
+            {total === 0 ? (
+              <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                Sem dados para exibir.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={48}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    stroke="var(--background)"
+                    strokeWidth={2}
+                    activeIndex={
+                      activeStatus
+                        ? pieData.findIndex((d) => d.status === activeStatus)
+                        : undefined
+                    }
+                    activeShape={(props: unknown) => {
+                      const p = props as {
+                        cx: number;
+                        cy: number;
+                        innerRadius: number;
+                        outerRadius: number;
+                        startAngle: number;
+                        endAngle: number;
+                        fill: string;
+                      };
+                      return (
+                        <Sector
+                          cx={p.cx}
+                          cy={p.cy}
+                          innerRadius={p.innerRadius}
+                          outerRadius={p.outerRadius + 6}
+                          startAngle={p.startAngle}
+                          endAngle={p.endAngle}
+                          fill={p.fill}
+                        />
+                      );
+                    }}
+                    onMouseEnter={(_, idx) => setActiveStatus(pieData[idx]?.status ?? null)}
+                    onMouseLeave={() => setActiveStatus(null)}
+                    onClick={(_, idx) =>
+                      setActiveStatus((prev) =>
+                        prev === pieData[idx]?.status ? null : pieData[idx]?.status ?? null,
+                      )
+                    }
+                    isAnimationActive={false}
+                  >
+                    {pieData.map((d) => (
+                      <Cell key={d.status} fill={d.color} cursor="pointer" />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: "var(--background)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                    formatter={(value: number, name: string) => [
+                      `${value} (${Math.round((value / total) * 100)}%)`,
+                      name,
+                    ]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </div>
+
+          <ul className="mt-4 space-y-2 border-t border-border pt-4">
+            {STATUS_ORDER.map((status) => {
+              const isActive = activeStatus === status;
+              return (
+                <li key={status}>
+                  <button
+                    type="button"
+                    onMouseEnter={() => setActiveStatus(status)}
+                    onMouseLeave={() => setActiveStatus(null)}
+                    onClick={() =>
+                      setActiveStatus((prev) => (prev === status ? null : status))
+                    }
+                    className={`flex w-full items-center justify-between rounded-md px-2 py-1 text-sm transition-colors ${
+                      isActive ? "bg-secondary" : "hover:bg-secondary/60"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ background: STATUS_COLORS[status] }}
+                      />
+                      <span className="text-muted-foreground">{statusLabel(status)}</span>
+                    </span>
+                    <span className="font-medium tabular-nums">{counts[status]}</span>
+                  </button>
+                </li>
+              );
+            })}
+            <li className="flex items-center justify-between px-2 pt-2 text-xs text-muted-foreground">
+              <span>Total exigido</span>
+              <span className="tabular-nums">{total}</span>
+            </li>
+          </ul>
         </Card>
 
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-xl">Atenção imediata</h2>
+            <h2 className="font-display text-xl">
+              {activeStatus ? `Filtrado: ${statusLabel(activeStatus)}` : "Atenção imediata"}
+            </h2>
             <Link
               to="/admin/suppliers"
               className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
@@ -151,7 +280,9 @@ function AdminDashboard() {
 
           {upcoming.length === 0 ? (
             <div className="mt-6 rounded-lg border border-dashed border-border bg-secondary/30 p-8 text-center text-sm text-muted-foreground">
-              Tudo em ordem por aqui. ✅
+              {activeStatus
+                ? `Nenhuma licença com status "${statusLabel(activeStatus)}".`
+                : "Tudo em ordem por aqui. ✅"}
             </div>
           ) : (
             <ul className="mt-4 divide-y divide-border">
