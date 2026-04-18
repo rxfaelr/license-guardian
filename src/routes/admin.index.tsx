@@ -267,7 +267,9 @@ function AdminDashboard() {
 
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-xl">Atenção imediata</h2>
+            <h2 className="font-display text-xl">
+              {activeStatus ? `Filtrado: ${statusLabel(activeStatus)}` : "Atenção imediata"}
+            </h2>
             <Link
               to="/admin/suppliers"
               className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
@@ -278,7 +280,9 @@ function AdminDashboard() {
 
           {upcoming.length === 0 ? (
             <div className="mt-6 rounded-lg border border-dashed border-border bg-secondary/30 p-8 text-center text-sm text-muted-foreground">
-              Tudo em ordem por aqui. ✅
+              {activeStatus
+                ? `Nenhuma licença com status "${statusLabel(activeStatus)}".`
+                : "Tudo em ordem por aqui. ✅"}
             </div>
           ) : (
             <ul className="mt-4 divide-y divide-border">
