@@ -138,26 +138,131 @@ function AdminDashboard() {
       {/* Risk & list */}
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-1">
-          <p className="text-sm font-medium text-muted-foreground">Indicador de risco</p>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="font-display text-5xl tracking-tight">{riskPct}%</span>
-            <span className="text-sm text-muted-foreground">irregular</span>
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Visão geral</p>
+              <h2 className="font-display text-xl">Distribuição de licenças</h2>
+            </div>
+            {activeStatus && (
+              <button
+                type="button"
+                onClick={() => setActiveStatus(null)}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                Limpar
+              </button>
+            )}
           </div>
-          <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-secondary">
-            <div
-              className="h-full rounded-full bg-danger transition-all"
-              style={{ width: `${riskPct}%` }}
-            />
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            {irregular} de {total} licenças exigidas estão expiradas ou pendentes de envio.
-          </p>
 
-          <div className="mt-6 space-y-2 border-t border-border pt-4">
-            <Row label="Total de licenças exigidas" value={total} />
-            <Row label="Em renovação (≤120 dias)" value={counts.renewing} />
-            <Row label="Fornecedores monitorados" value={filteredSuppliers.length} />
+          <div className="mt-2 h-56 w-full">
+            {total === 0 ? (
+              <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                Sem dados para exibir.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={48}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    stroke="var(--background)"
+                    strokeWidth={2}
+                    activeIndex={
+                      activeStatus
+                        ? pieData.findIndex((d) => d.status === activeStatus)
+                        : undefined
+                    }
+                    activeShape={(props: unknown) => {
+                      const p = props as {
+                        cx: number;
+                        cy: number;
+                        innerRadius: number;
+                        outerRadius: number;
+                        startAngle: number;
+                        endAngle: number;
+                        fill: string;
+                      };
+                      return (
+                        <Sector
+                          cx={p.cx}
+                          cy={p.cy}
+                          innerRadius={p.innerRadius}
+                          outerRadius={p.outerRadius + 6}
+                          startAngle={p.startAngle}
+                          endAngle={p.endAngle}
+                          fill={p.fill}
+                        />
+                      );
+                    }}
+                    onMouseEnter={(_, idx) => setActiveStatus(pieData[idx]?.status ?? null)}
+                    onMouseLeave={() => setActiveStatus(null)}
+                    onClick={(_, idx) =>
+                      setActiveStatus((prev) =>
+                        prev === pieData[idx]?.status ? null : pieData[idx]?.status ?? null,
+                      )
+                    }
+                    isAnimationActive={false}
+                  >
+                    {pieData.map((d) => (
+                      <Cell key={d.status} fill={d.color} cursor="pointer" />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: "var(--background)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                    formatter={(value: number, name: string) => [
+                      `${value} (${Math.round((value / total) * 100)}%)`,
+                      name,
+                    ]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </div>
+
+          <ul className="mt-4 space-y-2 border-t border-border pt-4">
+            {STATUS_ORDER.map((status) => {
+              const isActive = activeStatus === status;
+              return (
+                <li key={status}>
+                  <button
+                    type="button"
+                    onMouseEnter={() => setActiveStatus(status)}
+                    onMouseLeave={() => setActiveStatus(null)}
+                    onClick={() =>
+                      setActiveStatus((prev) => (prev === status ? null : status))
+                    }
+                    className={`flex w-full items-center justify-between rounded-md px-2 py-1 text-sm transition-colors ${
+                      isActive ? "bg-secondary" : "hover:bg-secondary/60"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ background: STATUS_COLORS[status] }}
+                      />
+                      <span className="text-muted-foreground">{statusLabel(status)}</span>
+                    </span>
+                    <span className="font-medium tabular-nums">{counts[status]}</span>
+                  </button>
+                </li>
+              );
+            })}
+            <li className="flex items-center justify-between px-2 pt-2 text-xs text-muted-foreground">
+              <span>Total exigido</span>
+              <span className="tabular-nums">{total}</span>
+            </li>
+          </ul>
         </Card>
 
         <Card className="p-6 lg:col-span-2">
