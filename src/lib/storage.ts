@@ -5,7 +5,8 @@ import type {
   Session,
   Supplier,
 } from "./types";
-import { RENEWAL_WINDOW_DAYS } from "./types";
+
+export const RENEWAL_WINDOW_DAYS = 120;
 
 const KEYS = {
   suppliers: "verdor.suppliers",

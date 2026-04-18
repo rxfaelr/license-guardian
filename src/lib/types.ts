@@ -1,7 +1,5 @@
 export type LicenseStatus = "valid" | "renewing" | "expired" | "missing";
 
-export const RENEWAL_WINDOW_DAYS = 120;
-
 export interface LicenseType {
   id: string;
   name: string;

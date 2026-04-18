@@ -9,38 +9,139 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SupplierRouteImport } from './routes/supplier'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SupplierIndexRouteImport } from './routes/supplier.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminSuppliersIndexRouteImport } from './routes/admin.suppliers.index'
+import { Route as AdminLicenseTypesIndexRouteImport } from './routes/admin.license-types.index'
+import { Route as AdminSuppliersSupplierIdRouteImport } from './routes/admin.suppliers.$supplierId'
 
+const SupplierRoute = SupplierRouteImport.update({
+  id: '/supplier',
+  path: '/supplier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupplierIndexRoute = SupplierIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SupplierRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSuppliersIndexRoute = AdminSuppliersIndexRouteImport.update({
+  id: '/suppliers/',
+  path: '/suppliers/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicenseTypesIndexRoute = AdminLicenseTypesIndexRouteImport.update({
+  id: '/license-types/',
+  path: '/license-types/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSuppliersSupplierIdRoute =
+  AdminSuppliersSupplierIdRouteImport.update({
+    id: '/suppliers/$supplierId',
+    path: '/suppliers/$supplierId',
+    getParentRoute: () => AdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/supplier': typeof SupplierRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
+  '/supplier/': typeof SupplierIndexRoute
+  '/admin/suppliers/$supplierId': typeof AdminSuppliersSupplierIdRoute
+  '/admin/license-types/': typeof AdminLicenseTypesIndexRoute
+  '/admin/suppliers/': typeof AdminSuppliersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/supplier': typeof SupplierIndexRoute
+  '/admin/suppliers/$supplierId': typeof AdminSuppliersSupplierIdRoute
+  '/admin/license-types': typeof AdminLicenseTypesIndexRoute
+  '/admin/suppliers': typeof AdminSuppliersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/supplier': typeof SupplierRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
+  '/supplier/': typeof SupplierIndexRoute
+  '/admin/suppliers/$supplierId': typeof AdminSuppliersSupplierIdRoute
+  '/admin/license-types/': typeof AdminLicenseTypesIndexRoute
+  '/admin/suppliers/': typeof AdminSuppliersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/supplier'
+    | '/admin/'
+    | '/supplier/'
+    | '/admin/suppliers/$supplierId'
+    | '/admin/license-types/'
+    | '/admin/suppliers/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/supplier'
+    | '/admin/suppliers/$supplierId'
+    | '/admin/license-types'
+    | '/admin/suppliers'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/supplier'
+    | '/admin/'
+    | '/supplier/'
+    | '/admin/suppliers/$supplierId'
+    | '/admin/license-types/'
+    | '/admin/suppliers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  SupplierRoute: typeof SupplierRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/supplier': {
+      id: '/supplier'
+      path: '/supplier'
+      fullPath: '/supplier'
+      preLoaderRoute: typeof SupplierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +149,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/supplier/': {
+      id: '/supplier/'
+      path: '/'
+      fullPath: '/supplier/'
+      preLoaderRoute: typeof SupplierIndexRouteImport
+      parentRoute: typeof SupplierRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/suppliers/': {
+      id: '/admin/suppliers/'
+      path: '/suppliers'
+      fullPath: '/admin/suppliers/'
+      preLoaderRoute: typeof AdminSuppliersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/license-types/': {
+      id: '/admin/license-types/'
+      path: '/license-types'
+      fullPath: '/admin/license-types/'
+      preLoaderRoute: typeof AdminLicenseTypesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/suppliers/$supplierId': {
+      id: '/admin/suppliers/$supplierId'
+      path: '/suppliers/$supplierId'
+      fullPath: '/admin/suppliers/$supplierId'
+      preLoaderRoute: typeof AdminSuppliersSupplierIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminSuppliersSupplierIdRoute: typeof AdminSuppliersSupplierIdRoute
+  AdminLicenseTypesIndexRoute: typeof AdminLicenseTypesIndexRoute
+  AdminSuppliersIndexRoute: typeof AdminSuppliersIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminSuppliersSupplierIdRoute: AdminSuppliersSupplierIdRoute,
+  AdminLicenseTypesIndexRoute: AdminLicenseTypesIndexRoute,
+  AdminSuppliersIndexRoute: AdminSuppliersIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface SupplierRouteChildren {
+  SupplierIndexRoute: typeof SupplierIndexRoute
+}
+
+const SupplierRouteChildren: SupplierRouteChildren = {
+  SupplierIndexRoute: SupplierIndexRoute,
+}
+
+const SupplierRouteWithChildren = SupplierRoute._addFileChildren(
+  SupplierRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  SupplierRoute: SupplierRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
