@@ -33,6 +33,7 @@ function AdminDashboard() {
   const types = useLicenseTypes();
   const licenses = useLicenses();
   const [filter, setFilter] = useState<string>("all");
+  const [activeStatus, setActiveStatus] = useState<LicenseStatus | null>(null);
 
   const filteredSuppliers = filter === "all" ? suppliers : suppliers.filter((s) => s.id === filter);
 
@@ -53,14 +54,26 @@ function AdminDashboard() {
   }, [allRequirements]);
 
   const total = allRequirements.length;
-  const irregular = counts.expired + counts.missing;
-  const riskPct = total === 0 ? 0 : Math.round((irregular / total) * 100);
 
-  const upcoming = allRequirements
-    .filter((r) => r.status === "renewing" || r.status === "expired")
+  const pieData = useMemo(
+    () =>
+      STATUS_ORDER.map((status) => ({
+        status,
+        name: statusLabel(status),
+        value: counts[status],
+        color: STATUS_COLORS[status],
+      })).filter((d) => d.value > 0),
+    [counts],
+  );
+
+  const upcomingSource = activeStatus
+    ? allRequirements.filter((r) => r.status === activeStatus)
+    : allRequirements.filter((r) => r.status === "renewing" || r.status === "expired");
+
+  const upcoming = upcomingSource
     .sort((a, b) => {
-      // expired first, then renewing soonest
-      const order = (s: LicenseStatus) => (s === "expired" ? 0 : 1);
+      const order = (s: LicenseStatus) =>
+        s === "expired" ? 0 : s === "renewing" ? 1 : s === "missing" ? 2 : 3;
       const oa = order(a.status);
       const ob = order(b.status);
       if (oa !== ob) return oa - ob;
