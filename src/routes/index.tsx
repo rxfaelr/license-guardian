@@ -1,22 +1,26 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import {
-  ADMIN_CREDENTIALS,
-  findSupplierByEmail,
-  loginAdmin,
-  loginSupplier,
-  setupSupplierPassword,
-} from "@/lib/storage";
+import { useEffect } from "react";
 import { useSeed, useSession } from "@/hooks/use-store";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { LeafIcon, ShieldCheck, Truck } from "lucide-react";
-import { toast } from "sonner";
+import { LeafIcon, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Verdor — Conformidade ambiental sem ruído" },
+      {
+        name: "description",
+        content:
+          "Centralize as licenças ambientais dos seus fornecedores e transportadores. Saiba o que está válido, em renovação ou expirado em um único olhar.",
+      },
+      { property: "og:title", content: "Verdor — Conformidade ambiental sem ruído" },
+      {
+        property: "og:description",
+        content:
+          "Painel único para acompanhar a validade das licenças ambientais dos seus fornecedores.",
+      },
+    ],
+  }),
   component: LandingPage,
 });
 
@@ -56,27 +60,60 @@ function LandingPage() {
             <Stat color="warning" label="Em renovação" />
             <Stat color="danger" label="Expiradas" />
           </div>
-
-          <div className="mt-10 rounded-xl border border-dashed border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
-            <p className="font-medium text-foreground">Credenciais de demonstração</p>
-            <p className="mt-1" suppressHydrationWarning>
-              <span className="font-medium">Admin:</span> {ADMIN_CREDENTIALS.email} ·{" "}
-              <span className="font-mono">{ADMIN_CREDENTIALS.password}</span>
-            </p>
-            <p suppressHydrationWarning>
-              <span className="font-medium">Fornecedor:</span> contato@ecotransporte.com ·{" "}
-              <span className="font-mono">demo123</span>
-            </p>
-          </div>
         </section>
 
-        <section className="flex items-center">
-          <Card className="w-full p-6 sm:p-8 shadow-soft border-border">
-            <LoginPanel />
-          </Card>
+        <section className="flex flex-col justify-center gap-4">
+          <p className="font-display text-sm uppercase tracking-wider text-muted-foreground">
+            Escolha seu acesso
+          </p>
+
+          <RoleCard
+            to="/login/supplier"
+            icon={<Truck className="h-6 w-6" />}
+            title="Sou fornecedor"
+            description="Envie e acompanhe a validade das suas licenças ambientais para a empresa contratante."
+          />
+
+          <RoleCard
+            to="/login/admin"
+            icon={<ShieldCheck className="h-6 w-6" />}
+            title="Sou da empresa matriz"
+            description="Gerencie fornecedores, tipos de licença e veja o painel de conformidade."
+          />
         </section>
       </div>
     </div>
+  );
+}
+
+function RoleCard({
+  to,
+  icon,
+  title,
+  description,
+}: {
+  to: "/login/admin" | "/login/supplier";
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Link to={to} className="group block">
+      <Card className="border-border p-6 shadow-soft transition-all group-hover:border-primary/40 group-hover:shadow-md">
+        <div className="flex items-start gap-4">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+            {icon}
+          </span>
+          <div className="flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-display text-xl">{title}</h2>
+              <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-foreground" />
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          </div>
+        </div>
+      </Card>
+    </Link>
   );
 }
 
@@ -91,234 +128,5 @@ function Stat({ color, label }: { color: "success" | "warning" | "danger"; label
       <span className={`inline-block h-2.5 w-2.5 rounded-full ${dot}`} />
       <p className="mt-2 text-xs font-medium text-muted-foreground">{label}</p>
     </div>
-  );
-}
-
-function LoginPanel() {
-  return (
-    <Tabs defaultValue="supplier" className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="supplier" className="gap-2">
-          <Truck className="h-4 w-4" />
-          Fornecedor
-        </TabsTrigger>
-        <TabsTrigger value="admin" className="gap-2">
-          <ShieldCheck className="h-4 w-4" />
-          Empresa Matriz
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="supplier" className="mt-6">
-        <SupplierLogin />
-      </TabsContent>
-
-      <TabsContent value="admin" className="mt-6">
-        <AdminLogin />
-      </TabsContent>
-    </Tabs>
-  );
-}
-
-function AdminLogin() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        const s = loginAdmin(email, password);
-        if (!s) return toast.error("Credenciais inválidas.");
-        toast.success("Bem-vindo!");
-        navigate({ to: "/admin" });
-      }}
-      className="space-y-4"
-    >
-      <div>
-        <h2 className="font-display text-2xl">Acesso administrativo</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Gerencie fornecedores, tipos de licença e veja o painel de conformidade.
-        </p>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="admin-email">Email</Label>
-        <Input
-          id="admin-email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="admin-password">Senha</Label>
-        <Input
-          id="admin-password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <Button type="submit" className="w-full">
-        Entrar como administrador
-      </Button>
-    </form>
-  );
-}
-
-function SupplierLogin() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [step, setStep] = useState<"check" | "login" | "setup">("check");
-  const [companyName, setCompanyName] = useState("");
-
-  const handleCheck = (e: React.FormEvent) => {
-    e.preventDefault();
-    const s = findSupplierByEmail(email);
-    if (!s) {
-      toast.error("Email não cadastrado. Solicite acesso ao administrador.");
-      return;
-    }
-    setCompanyName(s.companyName);
-    setStep(s.password ? "login" : "setup");
-  };
-
-  if (step === "check") {
-    return (
-      <form onSubmit={handleCheck} className="space-y-4">
-        <div>
-          <h2 className="font-display text-2xl">Acesso do fornecedor</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Use o email cadastrado pela empresa contratante.
-          </p>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="sup-email">Email corporativo</Label>
-          <Input
-            id="sup-email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="seu@empresa.com"
-            required
-          />
-        </div>
-        <Button type="submit" className="w-full">
-          Continuar
-        </Button>
-      </form>
-    );
-  }
-
-  if (step === "setup") {
-    return (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (password.length < 6) return toast.error("A senha precisa de ao menos 6 caracteres.");
-          if (password !== confirm) return toast.error("As senhas não coincidem.");
-          const sess = setupSupplierPassword(email, password);
-          if (!sess) return toast.error("Não foi possível definir a senha.");
-          toast.success("Senha definida — bem-vindo!");
-          navigate({ to: "/supplier" });
-        }}
-        className="space-y-4"
-      >
-        <div>
-          <h2 className="font-display text-2xl">Primeiro acesso</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Olá, <span className="font-medium text-foreground">{companyName}</span>. Defina uma
-            senha para seu acesso.
-          </p>
-        </div>
-        <div className="space-y-2">
-          <Label>Email</Label>
-          <Input value={email} disabled />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="new-pass">Nova senha</Label>
-          <Input
-            id="new-pass"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="confirm-pass">Confirmar senha</Label>
-          <Input
-            id="confirm-pass"
-            type="password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            required
-            minLength={6}
-          />
-        </div>
-        <Button type="submit" className="w-full">
-          Criar senha e entrar
-        </Button>
-        <button
-          type="button"
-          className="block w-full text-center text-xs text-muted-foreground hover:text-foreground"
-          onClick={() => setStep("check")}
-        >
-          ← Trocar email
-        </button>
-      </form>
-    );
-  }
-
-  // login
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        const sess = loginSupplier(email, password);
-        if (!sess) return toast.error("Senha incorreta.");
-        toast.success(`Bem-vindo, ${companyName}!`);
-        navigate({ to: "/supplier" });
-      }}
-      className="space-y-4"
-    >
-      <div>
-        <h2 className="font-display text-2xl">{companyName}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Informe sua senha para entrar.</p>
-      </div>
-      <div className="space-y-2">
-        <Label>Email</Label>
-        <Input value={email} disabled />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="sup-pass">Senha</Label>
-        <Input
-          id="sup-pass"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <Button type="submit" className="w-full">
-        Entrar
-      </Button>
-      <button
-        type="button"
-        className="block w-full text-center text-xs text-muted-foreground hover:text-foreground"
-        onClick={() => setStep("check")}
-      >
-        ← Trocar email
-      </button>
-    </form>
   );
 }

@@ -14,6 +14,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SupplierIndexRouteImport } from './routes/supplier.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as LoginSupplierRouteImport } from './routes/login.supplier'
+import { Route as LoginAdminRouteImport } from './routes/login.admin'
 import { Route as AdminSuppliersIndexRouteImport } from './routes/admin.suppliers.index'
 import { Route as AdminLicenseTypesIndexRouteImport } from './routes/admin.license-types.index'
 import { Route as AdminSuppliersSupplierIdRouteImport } from './routes/admin.suppliers.$supplierId'
@@ -43,6 +45,16 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const LoginSupplierRoute = LoginSupplierRouteImport.update({
+  id: '/login/supplier',
+  path: '/login/supplier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginAdminRoute = LoginAdminRouteImport.update({
+  id: '/login/admin',
+  path: '/login/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSuppliersIndexRoute = AdminSuppliersIndexRouteImport.update({
   id: '/suppliers/',
   path: '/suppliers/',
@@ -64,6 +76,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/supplier': typeof SupplierRouteWithChildren
+  '/login/admin': typeof LoginAdminRoute
+  '/login/supplier': typeof LoginSupplierRoute
   '/admin/': typeof AdminIndexRoute
   '/supplier/': typeof SupplierIndexRoute
   '/admin/suppliers/$supplierId': typeof AdminSuppliersSupplierIdRoute
@@ -72,6 +86,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login/admin': typeof LoginAdminRoute
+  '/login/supplier': typeof LoginSupplierRoute
   '/admin': typeof AdminIndexRoute
   '/supplier': typeof SupplierIndexRoute
   '/admin/suppliers/$supplierId': typeof AdminSuppliersSupplierIdRoute
@@ -83,6 +99,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/supplier': typeof SupplierRouteWithChildren
+  '/login/admin': typeof LoginAdminRoute
+  '/login/supplier': typeof LoginSupplierRoute
   '/admin/': typeof AdminIndexRoute
   '/supplier/': typeof SupplierIndexRoute
   '/admin/suppliers/$supplierId': typeof AdminSuppliersSupplierIdRoute
@@ -95,6 +113,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/supplier'
+    | '/login/admin'
+    | '/login/supplier'
     | '/admin/'
     | '/supplier/'
     | '/admin/suppliers/$supplierId'
@@ -103,6 +123,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login/admin'
+    | '/login/supplier'
     | '/admin'
     | '/supplier'
     | '/admin/suppliers/$supplierId'
@@ -113,6 +135,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/supplier'
+    | '/login/admin'
+    | '/login/supplier'
     | '/admin/'
     | '/supplier/'
     | '/admin/suppliers/$supplierId'
@@ -124,6 +148,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   SupplierRoute: typeof SupplierRouteWithChildren
+  LoginAdminRoute: typeof LoginAdminRoute
+  LoginSupplierRoute: typeof LoginSupplierRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -162,6 +188,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/login/supplier': {
+      id: '/login/supplier'
+      path: '/login/supplier'
+      fullPath: '/login/supplier'
+      preLoaderRoute: typeof LoginSupplierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/admin': {
+      id: '/login/admin'
+      path: '/login/admin'
+      fullPath: '/login/admin'
+      preLoaderRoute: typeof LoginAdminRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/suppliers/': {
       id: '/admin/suppliers/'
@@ -219,6 +259,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   SupplierRoute: SupplierRouteWithChildren,
+  LoginAdminRoute: LoginAdminRoute,
+  LoginSupplierRoute: LoginSupplierRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
