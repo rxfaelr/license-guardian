@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Sector, Tooltip } from "recharts";
 import { useLicenses, useLicenseTypes, useSuppliers } from "@/hooks/use-store";
 import { statusFor, statusLabel } from "@/lib/storage";
 import { Card } from "@/components/ui/card";
@@ -14,6 +15,14 @@ import {
 import { ArrowRight, AlertTriangle, ShieldCheck, XCircle, CircleDashed } from "lucide-react";
 import { shortDate, daysUntil } from "@/lib/format";
 import type { LicenseStatus } from "@/lib/types";
+
+const STATUS_ORDER: LicenseStatus[] = ["valid", "renewing", "expired", "missing"];
+const STATUS_COLORS: Record<LicenseStatus, string> = {
+  valid: "var(--success)",
+  renewing: "var(--warning)",
+  expired: "var(--danger)",
+  missing: "var(--muted-foreground)",
+};
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
