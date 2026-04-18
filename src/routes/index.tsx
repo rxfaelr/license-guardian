@@ -59,11 +59,11 @@ function LandingPage() {
 
           <div className="mt-10 rounded-xl border border-dashed border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
             <p className="font-medium text-foreground">Credenciais de demonstração</p>
-            <p className="mt-1">
+            <p className="mt-1" suppressHydrationWarning>
               <span className="font-medium">Admin:</span> {ADMIN_CREDENTIALS.email} ·{" "}
               <span className="font-mono">{ADMIN_CREDENTIALS.password}</span>
             </p>
-            <p>
+            <p suppressHydrationWarning>
               <span className="font-medium">Fornecedor:</span> contato@ecotransporte.com ·{" "}
               <span className="font-mono">demo123</span>
             </p>
