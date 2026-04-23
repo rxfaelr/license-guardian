@@ -30,7 +30,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Verdor — Gestão de Licenças Ambientais" },
+      { title: "Securuss — Gestão de Licenças Ambientais" },
       {
         name: "description",
         content:

@@ -38,7 +38,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <LeafIcon className="h-4 w-4" />
             </span>
             <span className="font-display text-lg leading-none">
-              Verdor
+              Securuss
               <span className="ml-1 text-xs font-sans font-normal text-muted-foreground">
                 {session.role === "admin" ? "Admin" : "Fornecedor"}
               </span>

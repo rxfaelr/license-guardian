@@ -12,7 +12,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/login/admin")({
   head: () => ({
     meta: [
-      { title: "Acesso administrativo — Verdor" },
+      { title: "Acesso administrativo — Securuss" },
       {
         name: "description",
         content:
@@ -47,7 +47,7 @@ function AdminLoginPage() {
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <LeafIcon className="h-5 w-5" />
           </span>
-          <span className="font-display text-2xl">Verdor</span>
+          <span className="font-display text-2xl">Securuss</span>
         </Link>
 
         <Card className="p-6 sm:p-8 shadow-soft border-border">
