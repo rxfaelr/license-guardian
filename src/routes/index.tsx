@@ -7,13 +7,13 @@ import { LeafIcon, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Verdor — Conformidade ambiental sem ruído" },
+      { title: "Securuss — Conformidade ambiental sem ruído" },
       {
         name: "description",
         content:
           "Centralize as licenças ambientais dos seus fornecedores e transportadores. Saiba o que está válido, em renovação ou expirado em um único olhar.",
       },
-      { property: "og:title", content: "Verdor — Conformidade ambiental sem ruído" },
+      { property: "og:title", content: "Securuss — Conformidade ambiental sem ruído" },
       {
         property: "og:description",
         content:
@@ -42,7 +42,7 @@ function LandingPage() {
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <LeafIcon className="h-5 w-5" />
             </span>
-            <span className="font-display text-2xl">Verdor</span>
+            <span className="font-display text-2xl">Securuss</span>
           </Link>
 
           <h1 className="font-display text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
