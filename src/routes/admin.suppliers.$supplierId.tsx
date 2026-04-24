@@ -163,14 +163,14 @@ function SupplierDetail() {
                       )}
                     </div>
                     {r.doc && (
-                      <a
-                        href={r.doc.fileDataUrl}
-                        download={r.doc.fileName}
+                      <button
+                        type="button"
+                        onClick={() => setViewing(r.doc!)}
                         className="inline-flex items-center gap-2 self-start rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-secondary sm:self-auto"
                       >
-                        <FileDown className="h-3.5 w-3.5" />
-                        {r.doc.fileName}
-                      </a>
+                        <FileText className="h-3.5 w-3.5" />
+                        Visualizar PDF
+                      </button>
                     )}
                   </li>
                 );
@@ -179,6 +179,16 @@ function SupplierDetail() {
           </Card>
         )}
       </section>
+
+      {viewing && (
+        <PdfViewer
+          open={!!viewing}
+          onClose={() => setViewing(null)}
+          fileName={viewing.fileName}
+          fileDataUrl={viewing.fileDataUrl}
+          title={types.find((t) => t.id === viewing.licenseTypeId)?.name}
+        />
+      )}
     </div>
   );
 }
