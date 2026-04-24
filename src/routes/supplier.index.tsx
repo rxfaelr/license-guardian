@@ -166,6 +166,16 @@ function SupplierPortal() {
         supplierId={supplier.id}
         onClose={() => setEditing(null)}
       />
+
+      {viewing && (
+        <PdfViewer
+          open={!!viewing}
+          onClose={() => setViewing(null)}
+          fileName={viewing.fileName}
+          fileDataUrl={viewing.fileDataUrl}
+          title={types.find((t) => t.id === viewing.licenseTypeId)?.name}
+        />
+      )}
     </div>
   );
 }
