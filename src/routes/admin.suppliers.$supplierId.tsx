@@ -24,6 +24,7 @@ function SupplierDetail() {
   const suppliers = useSuppliers();
   const licenses = useLicenses();
   const types = useLicenseTypes();
+  const [viewing, setViewing] = useState<LicenseDocument | null>(null);
 
   const supplier = suppliers.find((s) => s.id === supplierId);
 
