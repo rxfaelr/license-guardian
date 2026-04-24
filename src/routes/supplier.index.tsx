@@ -138,14 +138,14 @@ function SupplierPortal() {
 
                     <div className="flex shrink-0 items-center gap-2">
                       {r.doc && (
-                        <a
-                          href={r.doc.fileDataUrl}
-                          download={r.doc.fileName}
+                        <button
+                          type="button"
+                          onClick={() => setViewing(r.doc!)}
                           className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-secondary"
                         >
-                          <FileDown className="h-3.5 w-3.5" />
-                          PDF
-                        </a>
+                          <FileText className="h-3.5 w-3.5" />
+                          Visualizar PDF
+                        </button>
                       )}
                       <Button onClick={() => setEditing(r.type!)} size="sm">
                         <FileUp className="h-4 w-4" />
