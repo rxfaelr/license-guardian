@@ -42,6 +42,7 @@ function SupplierPortal() {
   const types = useLicenseTypes();
   const licenses = useLicenses();
   const [editing, setEditing] = useState<LicenseType | null>(null);
+  const [viewing, setViewing] = useState<LicenseDocument | null>(null);
 
   const supplier = suppliers.find((s) => s.id === session?.supplierId);
 
