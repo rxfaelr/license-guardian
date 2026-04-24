@@ -1,12 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLicenses, useLicenseTypes, useSuppliers } from "@/hooks/use-store";
 import { statusFor } from "@/lib/storage";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/StatusBadge";
-import { ArrowLeft, Building2, Mail, Phone, MapPin, User2, FileDown, Pencil } from "lucide-react";
+import { PdfViewer } from "@/components/PdfViewer";
+import { ArrowLeft, Building2, Mail, Phone, MapPin, User2, FileText, Pencil } from "lucide-react";
 import { shortDate, daysUntil } from "@/lib/format";
+import type { LicenseDocument } from "@/lib/types";
 import {
   DeleteSupplierButton,
   SupplierFormDialog,
@@ -22,6 +24,7 @@ function SupplierDetail() {
   const suppliers = useSuppliers();
   const licenses = useLicenses();
   const types = useLicenseTypes();
+  const [viewing, setViewing] = useState<LicenseDocument | null>(null);
 
   const supplier = suppliers.find((s) => s.id === supplierId);
 
@@ -160,14 +163,14 @@ function SupplierDetail() {
                       )}
                     </div>
                     {r.doc && (
-                      <a
-                        href={r.doc.fileDataUrl}
-                        download={r.doc.fileName}
+                      <button
+                        type="button"
+                        onClick={() => setViewing(r.doc!)}
                         className="inline-flex items-center gap-2 self-start rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-secondary sm:self-auto"
                       >
-                        <FileDown className="h-3.5 w-3.5" />
-                        {r.doc.fileName}
-                      </a>
+                        <FileText className="h-3.5 w-3.5" />
+                        Visualizar PDF
+                      </button>
                     )}
                   </li>
                 );
@@ -176,6 +179,16 @@ function SupplierDetail() {
           </Card>
         )}
       </section>
+
+      {viewing && (
+        <PdfViewer
+          open={!!viewing}
+          onClose={() => setViewing(null)}
+          fileName={viewing.fileName}
+          fileDataUrl={viewing.fileDataUrl}
+          title={types.find((t) => t.id === viewing.licenseTypeId)?.name}
+        />
+      )}
     </div>
   );
 }
