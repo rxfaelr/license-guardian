@@ -19,8 +19,8 @@ export function PdfViewer({ open, onClose, fileName, fileDataUrl, title }: PdfVi
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="flex h-[90vh] max-h-[90vh] w-[95vw] max-w-5xl flex-col gap-0 overflow-hidden p-0 sm:max-w-5xl">
-        <DialogHeader className="flex-row items-center justify-between gap-3 border-b border-border px-5 py-3 space-y-0">
-          <div className="min-w-0 flex-1 pr-8">
+        <DialogHeader className="flex-row items-center justify-between gap-3 border-b border-border py-3 pl-5 pr-14 space-y-0">
+          <div className="min-w-0 flex-1">
             <DialogTitle className="truncate text-base font-medium">
               {title ?? fileName}
             </DialogTitle>
