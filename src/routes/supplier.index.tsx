@@ -26,7 +26,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/StatusBadge";
-import { FileDown, FileUp, ShieldCheck, AlertTriangle, XCircle, CircleDashed } from "lucide-react";
+import { PdfViewer } from "@/components/PdfViewer";
+import { FileText, FileUp, ShieldCheck, AlertTriangle, XCircle, CircleDashed } from "lucide-react";
 import { toast } from "sonner";
 import { shortDate, daysUntil } from "@/lib/format";
 import type { LicenseDocument, LicenseType } from "@/lib/types";
