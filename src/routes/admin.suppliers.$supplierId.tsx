@@ -1,12 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLicenses, useLicenseTypes, useSuppliers } from "@/hooks/use-store";
 import { statusFor } from "@/lib/storage";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/StatusBadge";
-import { ArrowLeft, Building2, Mail, Phone, MapPin, User2, FileDown, Pencil } from "lucide-react";
+import { PdfViewer } from "@/components/PdfViewer";
+import { ArrowLeft, Building2, Mail, Phone, MapPin, User2, FileText, Pencil } from "lucide-react";
 import { shortDate, daysUntil } from "@/lib/format";
+import type { LicenseDocument } from "@/lib/types";
 import {
   DeleteSupplierButton,
   SupplierFormDialog,
