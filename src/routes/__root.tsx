@@ -37,7 +37,10 @@ export const Route = createRootRoute({
           "Plataforma de conformidade ambiental para controle de licenças de fornecedores e transportadores.",
       },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "stylesheet", href: appCss },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
