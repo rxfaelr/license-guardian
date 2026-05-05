@@ -45,34 +45,36 @@
 :root {
   --radius: 0.625rem;
 
-  /* Clean white + blue accent theme */
+  /* Securuss 70/20/10 — White / #182c44 navy / #cfb159 gold */
   --background: oklch(1 0 0);
-  --foreground: oklch(0.18 0.02 250);
+  --foreground: oklch(0.27 0.05 256);
   --surface: oklch(1 0 0);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 250);
+  --card-foreground: oklch(0.27 0.05 256);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 250);
+  --popover-foreground: oklch(0.27 0.05 256);
 
-  --primary: oklch(0.55 0.2 255);
-  --primary-foreground: oklch(1 0 0);
+  /* 10% — gold accent as primary CTA */
+  --primary: oklch(0.76 0.11 85);
+  --primary-foreground: oklch(0.27 0.05 256);
 
-  --secondary: oklch(0.97 0.005 250);
-  --secondary-foreground: oklch(0.25 0.03 250);
+  /* 20% — navy as secondary structural color */
+  --secondary: oklch(0.96 0.01 256);
+  --secondary-foreground: oklch(0.27 0.05 256);
 
-  --muted: oklch(0.97 0.005 250);
-  --muted-foreground: oklch(0.5 0.02 250);
+  --muted: oklch(0.96 0.01 256);
+  --muted-foreground: oklch(0.5 0.03 256);
 
-  --accent: oklch(0.95 0.03 255);
-  --accent-foreground: oklch(0.35 0.15 255);
+  --accent: oklch(0.95 0.04 85);
+  --accent-foreground: oklch(0.27 0.05 256);
 
   --destructive: oklch(0.58 0.22 27);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.92 0.005 250);
-  --input: oklch(0.92 0.005 250);
-  --ring: oklch(0.55 0.2 255);
+  --border: oklch(0.92 0.01 256);
+  --input: oklch(0.92 0.01 256);
+  --ring: oklch(0.76 0.11 85);
 
   /* Status semantics */
   --success: oklch(0.6 0.15 150);
@@ -82,20 +84,21 @@
   --danger: oklch(0.58 0.22 27);
   --danger-foreground: oklch(1 0 0);
 
-  --chart-1: oklch(0.55 0.2 255);
-  --chart-2: oklch(0.6 0.15 150);
-  --chart-3: oklch(0.75 0.15 75);
+  --chart-1: oklch(0.76 0.11 85);
+  --chart-2: oklch(0.27 0.05 256);
+  --chart-3: oklch(0.6 0.15 150);
   --chart-4: oklch(0.58 0.22 27);
   --chart-5: oklch(0.6 0.1 300);
 
-  --sidebar: oklch(0.99 0.003 250);
-  --sidebar-foreground: oklch(0.18 0.02 250);
-  --sidebar-primary: oklch(0.55 0.2 255);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.95 0.03 255);
-  --sidebar-accent-foreground: oklch(0.35 0.15 255);
-  --sidebar-border: oklch(0.92 0.005 250);
-  --sidebar-ring: oklch(0.55 0.2 255);
+  /* Sidebar = navy surface (20%) with gold accents (10%) */
+  --sidebar: oklch(0.27 0.05 256);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.76 0.11 85);
+  --sidebar-primary-foreground: oklch(0.27 0.05 256);
+  --sidebar-accent: oklch(0.32 0.05 256);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.32 0.05 256);
+  --sidebar-ring: oklch(0.76 0.11 85);
 }
 
 @layer base {
