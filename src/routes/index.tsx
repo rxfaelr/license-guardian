@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useSeed, useSession } from "@/hooks/use-store";
 import { Card } from "@/components/ui/card";
-import { LeafIcon, ShieldCheck, Truck, ArrowRight } from "lucide-react";
+import { ShieldCheck, Truck, ArrowRight } from "lucide-react";
+import securussLogo from "@/assets/securuss-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,9 +40,7 @@ function LandingPage() {
       <div className="mx-auto grid max-w-6xl gap-12 px-4 py-10 sm:px-6 lg:grid-cols-2 lg:py-20">
         <section className="flex flex-col justify-center">
           <Link to="/" className="mb-8 inline-flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <LeafIcon className="h-5 w-5" />
-            </span>
+            <img src={securussLogo} alt="Securuss" className="h-10 w-10 object-contain" />
             <span className="font-display text-2xl">Securuss</span>
           </Link>
 
