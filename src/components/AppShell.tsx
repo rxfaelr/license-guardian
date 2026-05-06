@@ -31,10 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-background bg-paper">
       <header className="sticky top-0 z-30 border-b border-sidebar-border bg-sidebar text-sidebar-foreground">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <Link
-            to={session.role === "admin" ? "/admin" : "/supplier"}
-            className="flex items-center gap-2"
-          >
+          <div className="flex items-center gap-2">
             <img src={securussLogo} alt="Securuss" className="h-8 w-8 object-contain" />
             <span className="font-display text-lg leading-none text-sidebar-foreground">
               Securuss
@@ -42,7 +39,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 {session.role === "admin" ? "Admin" : "Fornecedor"}
               </span>
             </span>
-          </Link>
+          </div>
 
           <nav className="hidden items-center gap-1 md:flex">
             {nav.map((item) => {
@@ -73,7 +70,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Button
               variant="ghost"
               size="sm"
-              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+              className="cursor-pointer text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
               onClick={() => {
                 setSession(null);
                 navigate({ to: "/" });
