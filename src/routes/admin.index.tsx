@@ -272,7 +272,7 @@ function AdminDashboard() {
             </h2>
             <Link
               to="/admin/suppliers"
-              className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+              className="inline-flex items-center gap-1 text-sm text-foreground hover:underline"
             >
               Ver fornecedores <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -298,7 +298,7 @@ function AdminDashboard() {
                       <div className="flex min-w-0 items-center gap-3">
                         <StatusDot status={r.status} />
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-foreground group-hover:text-primary">
+                          <p className="truncate text-sm font-medium text-foreground group-hover:text-foreground">
                             {r.supplier.companyName}
                           </p>
                           <p className="truncate text-xs text-muted-foreground">

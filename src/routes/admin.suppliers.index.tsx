@@ -103,7 +103,7 @@ function SuppliersPage() {
           />
         </div>
         {types.length === 0 && (
-          <Link to="/admin/license-types" className="text-sm text-primary hover:underline">
+          <Link to="/admin/license-types" className="text-sm text-foreground hover:underline">
             Cadastrar tipos de licença →
           </Link>
         )}
@@ -147,7 +147,7 @@ function SuppliersPage() {
                     )}
                     <span className="text-muted-foreground"> · {total} exigidas</span>
                   </span>
-                  <span className="inline-flex items-center gap-1 text-primary">
+                  <span className="inline-flex items-center gap-1 text-foreground">
                     Detalhes <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>

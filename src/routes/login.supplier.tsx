@@ -70,7 +70,7 @@ function SupplierLoginPage() {
 
         <Card className="p-6 sm:p-8 shadow-soft border-border">
           <div className="mb-6 flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-foreground">
               <Truck className="h-5 w-5" />
             </span>
             <div>
@@ -207,7 +207,7 @@ function SupplierLoginPage() {
 
           <p className="mt-6 border-t border-border pt-4 text-center text-xs text-muted-foreground">
             É administrador?{" "}
-            <Link to="/login/admin" className="font-medium text-foreground hover:text-primary">
+            <Link to="/login/admin" className="font-medium text-foreground hover:text-foreground">
               Acessar área administrativa
             </Link>
           </p>

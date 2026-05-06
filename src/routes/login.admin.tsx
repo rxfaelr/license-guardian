@@ -62,7 +62,7 @@ function AdminLoginPage() {
             className="space-y-4"
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-foreground">
                 <ShieldCheck className="h-5 w-5" />
               </span>
               <div>
@@ -107,7 +107,7 @@ function AdminLoginPage() {
 
             <p className="pt-2 text-center text-xs text-muted-foreground">
               É fornecedor?{" "}
-              <Link to="/login/supplier" className="font-medium text-foreground hover:text-primary">
+              <Link to="/login/supplier" className="font-medium text-foreground hover:text-foreground">
                 Acessar área do fornecedor
               </Link>
             </p>

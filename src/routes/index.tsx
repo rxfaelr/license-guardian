@@ -47,7 +47,7 @@ function LandingPage() {
 
           <h1 className="font-display text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Conformidade ambiental,{" "}
-            <span className="italic text-primary">sem ruído.</span>
+            <span className="italic text-foreground">sem ruído.</span>
           </h1>
           <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
             Centralize as licenças dos seus fornecedores e transportadores em um
@@ -101,7 +101,7 @@ function RoleCard({
     <Link to={to} className="group block">
       <Card className="border-border p-6 shadow-soft transition-all group-hover:border-primary/40 group-hover:shadow-md">
         <div className="flex items-start gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
             {icon}
           </span>
           <div className="flex-1">
