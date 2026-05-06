@@ -107,7 +107,7 @@ function AdminLoginPage() {
 
             <p className="pt-2 text-center text-xs text-muted-foreground">
               É fornecedor?{" "}
-              <Link to="/login/supplier" className="font-medium text-foreground hover:text-primary">
+              <Link to="/login/supplier" className="font-medium text-foreground hover:text-foreground">
                 Acessar área do fornecedor
               </Link>
             </p>
