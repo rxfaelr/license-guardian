@@ -16,7 +16,7 @@ const KEYS = {
   seeded: "verdor.seeded.v1",
 } as const;
 
-const ADMIN_EMAIL = "admin@verdor.app";
+const ADMIN_EMAIL = "admin@securuss.app";
 const ADMIN_PASSWORD = "admin123";
 
 function read<T>(key: string, fallback: T): T {
