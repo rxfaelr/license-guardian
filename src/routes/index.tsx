@@ -8,7 +8,7 @@ import securussLogo from "@/assets/securuss-logo.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Securuss — Conformidade ambiental sem ruído" },
+      { title: "Securuss — Gestão de Licenças Ambientais" },
       {
         name: "description",
         content:
