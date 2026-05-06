@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background bg-paper">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-sidebar-border bg-sidebar text-sidebar-foreground">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link
             to={session.role === "admin" ? "/admin" : "/supplier"}
@@ -37,9 +37,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <LeafIcon className="h-4 w-4" />
             </span>
-            <span className="font-display text-lg leading-none">
+            <span className="font-display text-lg leading-none text-sidebar-foreground">
               Securuss
-              <span className="ml-1 text-xs font-sans font-normal text-muted-foreground">
+              <span className="ml-1 text-xs font-sans font-normal text-sidebar-foreground/60">
                 {session.role === "admin" ? "Admin" : "Fornecedor"}
               </span>
             </span>
@@ -57,8 +57,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                     active
-                      ? "bg-secondary text-secondary-foreground"
-                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                      ? "bg-primary text-primary-foreground"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                   )}
                 >
                   {item.label}
@@ -68,12 +68,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <span className="hidden text-sm text-muted-foreground sm:inline">
+            <span className="hidden text-sm text-sidebar-foreground/70 sm:inline">
               {session.email}
             </span>
             <Button
               variant="ghost"
               size="sm"
+              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
               onClick={() => {
                 setSession(null);
                 navigate({ to: "/" });
@@ -86,7 +87,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Mobile nav */}
-        <div className="flex gap-1 overflow-x-auto border-t border-border px-4 py-2 md:hidden">
+        <div className="flex gap-1 overflow-x-auto border-t border-sidebar-border px-4 py-2 md:hidden">
           {nav.map((item) => {
             const active =
               pathname === item.to ||
@@ -98,8 +99,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 className={cn(
                   "whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium",
                   active
-                    ? "bg-secondary text-secondary-foreground"
-                    : "text-muted-foreground hover:bg-secondary/60",
+                    ? "bg-primary text-primary-foreground"
+                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent",
                 )}
               >
                 {item.label}
