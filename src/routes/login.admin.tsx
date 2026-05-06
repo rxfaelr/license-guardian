@@ -62,7 +62,7 @@ function AdminLoginPage() {
             className="space-y-4"
           >
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-foreground">
                 <ShieldCheck className="h-5 w-5" />
               </span>
               <div>
