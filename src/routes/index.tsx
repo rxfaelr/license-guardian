@@ -39,10 +39,10 @@ function LandingPage() {
     <div className="min-h-screen bg-background bg-paper">
       <div className="mx-auto grid max-w-6xl gap-12 px-4 py-10 sm:px-6 lg:grid-cols-2 lg:py-20">
         <section className="flex flex-col justify-center">
-          <Link to="/" className="mb-8 inline-flex items-center gap-2">
+          <div className="mb-8 inline-flex items-center gap-2">
             <img src={securussLogo} alt="Securuss" className="h-10 w-10 object-contain" />
             <span className="font-display text-2xl">Securuss</span>
-          </Link>
+          </div>
 
           <h1 className="font-display text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Conformidade ambiental,{" "}
