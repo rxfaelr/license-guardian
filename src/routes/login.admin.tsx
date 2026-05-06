@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, LeafIcon, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
+import securussLogo from "@/assets/securuss-logo.png";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login/admin")({
@@ -44,9 +45,7 @@ function AdminLoginPage() {
         </Link>
 
         <Link to="/" className="mb-8 inline-flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <LeafIcon className="h-5 w-5" />
-          </span>
+          <img src={securussLogo} alt="Securuss" className="h-10 w-10 object-contain" />
           <span className="font-display text-2xl">Securuss</span>
         </Link>
 

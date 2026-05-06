@@ -2,7 +2,8 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useSession } from "@/hooks/use-store";
 import { setSession } from "@/lib/storage";
 import { Button } from "@/components/ui/button";
-import { LeafIcon, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
+import securussLogo from "@/assets/securuss-logo.png";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -34,9 +35,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             to={session.role === "admin" ? "/admin" : "/supplier"}
             className="flex items-center gap-2"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <LeafIcon className="h-4 w-4" />
-            </span>
+            <img src={securussLogo} alt="Securuss" className="h-8 w-8 object-contain" />
             <span className="font-display text-lg leading-none text-sidebar-foreground">
               Securuss
               <span className="ml-1 text-xs font-sans font-normal text-sidebar-foreground/60">
