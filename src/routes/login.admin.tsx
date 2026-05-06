@@ -44,10 +44,10 @@ function AdminLoginPage() {
           Voltar
         </Link>
 
-        <Link to="/" className="mb-8 inline-flex items-center gap-2">
+        <div className="mb-8 inline-flex items-center gap-2">
           <img src={securussLogo} alt="Securuss" className="h-10 w-10 object-contain" />
           <span className="font-display text-2xl">Securuss</span>
-        </Link>
+        </div>
 
         <Card className="p-6 sm:p-8 shadow-soft border-border">
           <form
