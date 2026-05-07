@@ -1,30 +1,63 @@
-## Nova paleta Securuss (70/20/10)
+## Contexto
 
-Aplicar a proporção 70/20/10 ao tema do site, mantendo o estilo limpo atual:
+O projeto está configurado para Cloudflare Workers através do `@lovable.dev/vite-tanstack-config`, que injeta o plugin Cloudflare e gera saída em formato Worker (não compatível com a Vercel). Resultado: 404 ao publicar na Vercel porque não há `index.html` na raiz do build.
 
-- **70% Branco** — fundos de página, cards, superfícies (`background`, `card`, `popover`, `surface`).
-- **20% Azul-marinho `#182c44`** — cor estrutural/secundária: header/sidebar, textos principais (`foreground`), botões secundários, bordas de destaque, footer.
-- **10% Dourado `#cfb159`** — cor de destaque (accent): botão primário (CTA), links ativos, ícones de destaque, badges de status "válido", focus ring.
+A boa notícia: a aplicação **não usa nenhum recurso de servidor** — não há `createServerFn`, nem rotas em `src/routes/api/`, nem acesso a `process.env`. Toda a persistência é via `localStorage` (`src/lib/storage.ts`). Ou seja, não precisamos de SSR nem de funções serverless na Vercel.
 
-### Mudanças
+## Estratégia
 
-**`src/styles.css`** — substituir os tokens do `:root`:
-- `--background`, `--card`, `--popover`, `--surface` → branco puro (mantido).
-- `--foreground`, `--card-foreground`, `--popover-foreground`, `--secondary-foreground` → `#182c44` convertido para oklch.
-- `--secondary` → tom muito claro derivado do `#182c44` (~oklch(0.96 0.01 250)) para fundos de seções secundárias.
-- `--primary` → `#cfb159` (oklch ≈ 0.76 0.11 85), `--primary-foreground` → `#182c44` (contraste AA garantido sobre dourado).
-- `--accent` → tom claro derivado do dourado (~oklch(0.95 0.04 85)), `--accent-foreground` → `#182c44`.
-- `--ring` → `#cfb159`.
-- `--border`, `--input` → cinza muito leve com leve viés azul (mantido próximo do atual).
-- `--sidebar*` → fundo `#182c44`, foreground branco, primary/accent dourado (transformando a sidebar em superfície "20%").
-- `--success` mantém verde (status), mas `--chart-1` passa a dourado e `--chart-2` ao azul-marinho para refletir a paleta.
+Converter o build para **SPA estático** (TanStack Router puro, sem TanStack Start/SSR). A Vercel então serve um diretório `dist/` simples com fallback para `index.html` — solução mais robusta e barata, sem depender de adapters específicos.
 
-**`public/favicon.svg`** (já planejado) — atualizar as cores da folha: fundo `#182c44`, traço `#cfb159`, para ficar coerente com a nova identidade.
+## Mudanças no código
 
-### Como a proporção fica visível
+1. **`vite.config.ts`** — substituir o preset `@lovable.dev/vite-tanstack-config` por uma configuração Vite padrão com:
+   - `@vitejs/plugin-react`
+   - `@tailwindcss/vite`
+   - `vite-tsconfig-paths`
+   - `@tanstack/router-plugin/vite` em modo `target: 'react'` (gera o route tree para TanStack Router, sem Start)
 
-- Páginas e formulários: fundos brancos dominam (70%).
-- AppShell/sidebar/topbar e tipografia principal em `#182c44` (20%).
-- Botões "Salvar", "Entrar", links ativos, ícones-chave e bordas de foco em `#cfb159` (10%).
+2. **`src/router.tsx`** — manter como está; já usa `createRouter` de `@tanstack/react-router`.
 
-Nenhum componente precisa ser editado individualmente — como tudo usa os tokens semânticos do Tailwind/shadcn (`bg-primary`, `text-foreground`, `bg-sidebar`, etc.), a troca dos tokens propaga para toda a aplicação automaticamente.
+3. **`src/routes/__root.tsx`** — remover `HeadContent`, `Scripts`, `shellComponent` e o wrapper `<html><body>`. Em SPA isso vai no `index.html`. O root passa a exportar apenas `component: RootComponent` com `<Outlet />` + `<Toaster />` + `notFoundComponent`.
+
+4. **`index.html`** (novo, na raiz) — shell HTML com `<link rel="icon" href="/favicon.png">`, meta tags base e `<div id="root">` + `<script type="module" src="/src/main.tsx">`.
+
+5. **`src/main.tsx`** (novo) — bootstrap client-side:
+   ```ts
+   import { RouterProvider } from "@tanstack/react-router";
+   import { createRoot } from "react-dom/client";
+   import { getRouter } from "./router";
+   import "./styles.css";
+   createRoot(document.getElementById("root")!).render(
+     <RouterProvider router={getRouter()} />
+   );
+   ```
+
+6. **`package.json`** — remover dependências não usadas: `@tanstack/react-start`, `@cloudflare/vite-plugin`, `@lovable.dev/vite-tanstack-config`. Manter `@tanstack/react-router` e `@tanstack/router-plugin`.
+
+7. **Apagar** `wrangler.jsonc` e `src/routeTree.gen.ts` (será regenerado).
+
+8. **`vercel.json`** — manter com o rewrite SPA (já está correto para esse modelo):
+   ```json
+   { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+   ```
+
+## Configuração na Vercel
+
+Ao importar o repositório:
+
+| Campo | Valor |
+|---|---|
+| Root Directory | `./` (raiz) |
+| Framework Preset | **Vite** |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Install Command | `npm install` |
+
+Não precisa de variáveis de ambiente (a app não usa nenhuma).
+
+## Riscos / observações
+
+- Como a app é toda client-side com `localStorage`, SPA é o modelo natural. Nada de SSR/SEO é perdido em relação ao que já existia.
+- Os arquivos de rota (`src/routes/*.tsx`) **não mudam** — o `router-plugin` continua gerando o `routeTree.gen.ts` automaticamente.
+- Após aprovar, vou rodar o build local para validar antes de você subir na Vercel.
